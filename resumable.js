@@ -700,7 +700,7 @@
             $.resumableObj.uploadNextChunk();
           } else {
             // distinguish between chunk does not exist and error if 'testChunkNotExist' is set
-            if($.getOpt('testChunkNotExists')) {
+            if($.getOpt('testChunkNotExists') && $.xhr) {
               if ($h.contains($.getOpt('testChunkNotExists'), $.xhr.status)) {
                 $.send()
               } else {
