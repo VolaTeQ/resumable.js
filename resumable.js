@@ -702,7 +702,7 @@
                 $.send()
               } else {
                 $.callback(status, $.message());
-                $.resumableObj.uploadNextChunk();
+                // $.resumableObj.uploadNextChunk();
               }
             } else {
               $.send()
