@@ -96,7 +96,7 @@ declare namespace Resumable {
     /**
      * Checks http status result of the test GET request and only sends the chunk if it is one of them and emits error event if it is not. (Default: null)
      **/
-    testChunkNotExists?: boolean;
+    testChunkNotExists?: number[] | null;
     /**
      * Optional function to process each chunk before testing & sending. Function is passed the chunk as parameter, and should call the preprocessFinished method on the chunk when finished. (Default: null)
      **/
