@@ -62,6 +62,7 @@
       testTarget: null,
       parameterNamespace:'',
       testChunks:true,
+      testChunkNotExists:null,
       generateUniqueIdentifier:null,
       getTarget:null,
       maxChunkRetries:100,
@@ -695,7 +696,17 @@
             $.callback(status, $.message());
             $.resumableObj.uploadNextChunk();
           } else {
-            $.send();
+            // distinguish between chunk does not exist and error if 'testChunkNotExist' is set
+            if($.getOpt('testChunkNotExists')) {
+              if ($h.contains($.getOpt('testChunkNotExists'), $.xhr.status)) {
+                $.send()
+              } else {
+                $.callback(status, $.message());
+                $.resumableObj.uploadNextChunk();
+              }
+            } else {
+              $.send()
+            }
           }
         };
         $.xhr.addEventListener('load', testHandler, false);
