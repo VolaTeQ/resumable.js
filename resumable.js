@@ -68,6 +68,7 @@
       maxChunkRetries:100,
       chunkRetryInterval:undefined,
       permanentErrors:[400, 401, 403, 404, 409, 415, 500, 501],
+      freezeOnPermanentError:false,
       maxFiles:undefined,
       withCredentials:false,
       xhrTimeout:0,
@@ -499,7 +500,9 @@
         case 'error':
           $.abort();
           _error = true;
-          $.chunks = [];
+          if (!$.getOpt('freezeOnPermanentError')) {
+            $.chunks = [];
+          }
           $.resumableObj.fire('fileError', $, message);
           break;
         case 'success':
@@ -702,7 +705,11 @@
                 $.send()
               } else {
                 $.callback(status, $.message());
-                // $.resumableObj.uploadNextChunk();
+                if (!$.getOpt('freezeOnPermanentError')) {
+                  $.resumableObj.uploadNextChunk();
+                } else {
+                  $.abort();
+                }
               }
             } else {
               $.send()
@@ -800,10 +807,18 @@
         // Done (either done, failed or retry)
         var doneHandler = function(e){
           var status = $.status();
-          if(status=='success'||status=='error') {
+          if(status=='success') {
             $.callback(status, $.message());
             $.resumableObj.uploadNextChunk();
-          } else {
+          } else if(status=='error') {
+            $.callback('error', $.message());
+            if (!$.getOpt('freezeOnPermanentError')) {
+              $.resumableObj.uploadNextChunk();
+            } else {
+              $.abort();
+            }
+          }
+          else {
             $.callback('retry', $.message());
             $.abort();
             $.retries++;
