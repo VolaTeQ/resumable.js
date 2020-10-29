@@ -708,6 +708,7 @@
                 if (!$.getOpt('freezeOnPermanentError')) {
                   $.resumableObj.uploadNextChunk();
                 } else {
+                  $.tested = false;
                   $.abort();
                 }
               }
